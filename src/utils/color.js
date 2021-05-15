@@ -1,0 +1,1 @@
+export const ERROR_COLOR = 'rgb(233, 111, 111)';

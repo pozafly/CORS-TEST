@@ -14,7 +14,7 @@ html {
 }
 
 .intro {
-  text-align: center;
+  /* text-align: center; */
   margin: 4rem 9rem;
   font-size: 1.2rem;
   font-weight: 400;
@@ -36,12 +36,16 @@ html {
   border-radius: 30px;
 }
 
+h3 {
+  font-size: 1.2rem;
+}
+
 .description {
-  margin: 4rem 3rem;
+  margin: 2rem 3rem 2rem;
 }
 
 .content {
-  margin: 0 auto 2rem;
+  margin: 0 auto 1.4rem;
   text-align: center;
 }
 
@@ -62,6 +66,11 @@ html {
   justify-content: center;
   align-items: center;
   margin: 0 auto;
+}
+
+img {
+  margin: 0 auto;
+  border-radius: 10px;
 }
 
 code {
