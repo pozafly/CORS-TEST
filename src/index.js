@@ -1,4 +1,6 @@
 import axios from 'axios';
+import init from './highlight';
+init();
 
 const content = document.querySelector('.content');
 const result = document.querySelector('.result');
