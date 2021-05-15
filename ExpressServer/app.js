@@ -4,10 +4,10 @@ const port = 3000;
 const router = require('./router/main')(app);
 
 app.all('/*', (req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
-  res.header('Access-Control-Allow-Headers', 'X-Requested-With');
+  // res.header('Access-Control-Allow-Origin', '*');
+  // res.header('Access-Control-Allow-Headers', 'X-Requested-With');
   next();
-})
+});
 
 const name = [
   { id: 1, name: '11'},
@@ -16,6 +16,8 @@ const name = [
 ];
 
 app.get('/', (req, res) => {
+  console.log(req)
+  console.log(res)
   res.send('Hello World!');
 });
 
