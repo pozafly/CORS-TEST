@@ -42,7 +42,7 @@ th, td {
 
 .intro {
   /* text-align: center; */
-  margin: 4rem 9rem;
+  margin: 4rem 9rem 0;
   font-size: 1.2rem;
   font-weight: 400;
 }
@@ -96,8 +96,9 @@ h3 {
 }
 
 img {
-  margin: 0 auto;
+  margin: 0 auto 1rem;
   border-radius: 10px;
+  display: flex;
 }
 
 code {
