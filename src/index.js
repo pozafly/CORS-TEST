@@ -1,6 +1,6 @@
-import axios from 'axios';
 import init from './highlight';
-import './corsGenerate';
+import './corsTest/generate';
+import './corsTest/showOrigin';
 
 init();
 

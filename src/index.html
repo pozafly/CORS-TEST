@@ -13,14 +13,16 @@
     </h1>
 
     <h2 class="intro">
-      어서오세요! 🙃 <br /><br />
-      CORS TEST는 네트워크 요청 시 발생하는 CORS 에러를 직접 코드를 통해 확인하기 위해 만들어졌습니다. <br/>  
-      구체적인 설명과 함께 CORS를 직접 경험하면서 어떻게 해결해야할지 알아봐요!
+      어서오세요! 🤗 <br /><br />
+      <p>
+        CORS TEST는 네트워크 요청 시 발생하는 CORS 에러를 직접 코드를 통해 확인하기 위해 만들어졌습니다. <br/>  
+        구체적인 설명과 함께 CORS를 직접 경험하면서 어떻게 해결해야할지 알아봐요!
+      </p>
     </h2>
 
     <div class="content-container">
       <div class="description">
-        <h3>🎯 목차</h3><br /><br />
+        <h2>🎯 목차</h2><br /><br />
         1. CORS란?<br /><br />
         2. 출처(Origin)란?<br/><br />
         3. SOP란?<br /><br />
@@ -32,18 +34,176 @@
 
     <div class="content-container">
       <div class="description">
-        <h3>🎯 1. CORS란?</h3><br /><br />
-        Cross-Origin Resource Sharing. 교차 출처 자원 공유입니다.<br/>
-        CORS 에러는 모두 CORS 정책을 위반했기 때문에 발생하는 것이다. 신경써야할 것이 늘어나지만,<br />
-        CORS라는 방어막이 존재하기 때문에 여러 곳에서 가져오는 리소스가 안전하다는 최소한의 보장을 받는다.
-        <br /><br />
-        
-        📌 Resource(자원)
-        이란, HTTP 요청 대상을 말한다. 문서, 사진 또는 다른 어떤 것이든 될 수 있다.
-        
-        [웹 리소스 식별](https://developer.mozilla.org/ko/docs/Web/HTTP/Basics_of_HTTP/Identifying_resources_on_the_Web) 문서를 읽고 URL에
-        대해 알면 좋다.
+        <h2>⚡️ CORS 란?</h2><br /><br />
+        <p>
+          Cross-Origin Resource Sharing. 한글로 번역하면 교차 출처 자원 공유입니다.<br/>
+          쉽게 말하면 서로 다른 출처(Origin) 간 통신 시 자원을 가져올 때 출처가 다르다면 브라우저가 뱉어내는 Error를 말합니다.<br/>
+        </p>
+        <p>
+          CORS 에러는 모두 CORS 정책을 위반했기 때문에 발생하는 것입니다. 개발자는 그냥 코드만 잘 작성하면 되는 것 아닐까?
+          라고 생각할 수 있지만,<br />
+          CORS라는 방어막이 존재하기 때문에 출처가 다른 여러 곳에서 가져오는 자원이 안전하다는 최소한의 보장을 받습니다.
+        </p>        
+        <p>
+          여기서 자원(Resource)이란, HTTP 통신을 통해 요청하는 대상을 말합니다. 문서, 사진 또는 다른 어떤 것이든 될 수 있습니다.<br/>
+          <a href="https://developer.mozilla.org/ko/docs/Web/HTTP/Basics_of_HTTP/Identifying_resources_on_the_Web">
+            웹 리소스 식별
+          </a>
+          문서를 읽고 자원과 URI에 대해 참고하시면 좋습니다.
+        </p>
 
+      </div>
+    </div>
+
+    <div class="content-container">
+      <div class="description">
+        <h2>⚡️ 출처(Origin) 란?</h2><br /><br />
+        <p>
+          CORS는 서로 다른 출처(Origin) 때문에 발생하는 문제라고 했는데, 출처는 무엇인지 알아봅시다.
+          <pre><code>
+https://pozafly.github.io:443/about/aaa?q=123&poza=oldest#foo
+          </code></pre>
+          위와 같은 URI가 있다고 해봅시다.
+          <p>
+            <ul>
+              <li><b>https://</b> : Protocol</li>
+              <li><b>pozafly.github.io</b> : Host</li>
+              <li><b>:443</b> : Port</li>
+              <li><b>/about/aaa</b> : Path</li>
+              <li><b>?q=123&poza=oldest</b> : Query String</li>
+              <li><b>#foo</b> : Fragment</li>
+            </ul>
+          </p>
+        </p>
+        <p>
+          여기서 출처란 Protocol, Host, Port 를 출처라고 한다. 출처가 같다는 말은 이 세가지가 같다는 것을 의미합니다. port 부분은 조금 다른 부분이 있습니다.
+        </p>        
+        <p>
+          개발자 도구에 가면 손쉽게 출처를 파악할 수 있는데,
+          <pre><code>
+console.log(location.origin);
+          </code></pre>
+          을 입력해보면 출처에 대한 정보를 알 수 있습니다.
+        </p>
+        <div class="content">
+          <button class="btn show-origin-call">Click</button>
+          <div class="result show-origin-result"></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="content-container">
+      <div class="description">
+        <h2>⚡️ SOP 란?</h2><br /><br />
+        <p>
+          웹에서 다른 출처로 리소스 요청을 제한하는 것과 관련해서 두 가지 정책이 존재합니다. 한 가지는 CORS이고, 다른 한 가지는 SOP입니다.<br/>
+          SOP(Same-Origin Policy)는 동일 출처 정책이라고 합니다. 같은 출처에서만 리소스를 공유할 수 있다는 규칙입니다.<br/>
+        </p>
+        <p>
+          웹은 오픈 되어있는 공간이라서, 좋은 리소스가 있을 수 있고 좋지 않은 리소스가 있을 수 있습니다. <br />
+          좋지 않은 리소스로부터 공격을 받을 수 있기 때문에 같은 출처에서만 리소스를 받을 수 있게 하는 것이 동일 출처 정책입니다.
+        </p>
+        <p>
+          다른 출처로 리소스를 요청하게 되면 SOP 정책을 위반한 것이 되고, <br/>
+          SOP의 예외 조항인 CORS 정책까지 지키지 않는다면 아예 다른 출처의 리소스를 사용할 수 없게 되는 것입니다.<br />
+        </p>
+        <p>
+          이렇게 다른 출처의 리소스를 사용하는 것을 제한하는 행위는 하나의 정책만으로 결정된 사항이 아니라는 의미가 되고, <br/>
+          SOP에서 정의된 예외 조항과 CORS를 사용할 수 있는 케이스들이 맞물리지 않을 경우에 아예 리소스
+          요청을 할 수 없는 케이스도 존재할 수 있습니다.
+        </p>
+        <p>
+          http, https 통신은 모두 SOP 정책을 받게 되는데, 하나의 홈페이지에 다른 정보를 받고 싶을 수도 있습니다. <br/>
+          즉, 다른 출처에서 가져오고 싶은 것입니다. 따라서 예외 조항을 만들어 두었습니다.
+        </p>
+        <p>
+          <h4>예외 조항</h4>
+          <ul>
+            <li>CORS 정책을 지킨 요청</li>
+            <li>실행 가능한 스크립트</li>
+            <li>랜더될 이미지</li>
+            <li>스타일 시트</li>
+            <li>등등..</li>
+          </ul>
+        </p>
+        <br/>
+        <br />
+        <p>
+          <h2>같은 출처 VS 다른 출처</h2>
+        </p>
+        <p>
+          두 개의 출처가 서로 같다고 판단하는 로직 자체는 굉장히 간단합니다.
+        </p>
+        <p>
+          예를 들어 <b>https://pozafly.github.io</b>라는 url이 있다고 가정합시다.
+        </p>
+        <p>
+          <table border="1px">
+            <thead>
+              <tr>
+                <th>URL</th>
+                <th align="center">같은 출처</th>
+                <th>이유</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><code>https://pozafly.github.io/about</code></td>
+                <td align="center">O</td>
+                <td>Protocol, Host, Port(생략되어있음) 동일</td>
+              </tr>
+              <tr>
+                <td><code>https://github.io:443/bookmarks?page=1</code></td>
+                <td align="center">O</td>
+                <td>Protocol, Host, Port 동일<br>(port는 RFC표준에서 생략이 가능하기 때문에 같은 출처.)</td>
+              </tr>
+              <tr>
+                <td><code>http://github.io</code></td>
+                <td align="center">X</td>
+                <td>Protocol이 다름</td>
+              </tr>
+              <tr>
+                <td><code>https://api.github.io</code></td>
+                <td align="center">X</td>
+                <td>Host가 다름</td>
+              </tr>
+              <tr>
+                <td><code>https://github.io:8080</code></td>
+                <td align="center">?</td>
+                <td>브라우저의 구현에 따라 다름.</td>
+              </tr>
+            </tbody>
+          </table>
+        </p>
+        <p>
+          마지막 케이스는 만약 출처에 `https://pozafly.github.io:80` 처럼 포트 번호가 명시되어 있다면 명백하게 다른 출처로 인정되지만,<br/>
+          예시로 든 출처의 경우 포트 번호가 포함되지 않았기 때문에 판단하기가 애매합니다.
+        </p>
+        <p>
+          IE는 port 검사를 하지 않아 허용되지만, FireFox나 Chrome은 port 검사를 하기 때문에 다른 출처라고 알아듣습니다.
+        </p>
+        <p>
+          <h4>📌 출처 비교는 브라우저 스펙</h4>
+        </p>
+        <p>
+          중요한 사실은 이렇게 출처를 비교하는 로직이 서버에 구현된 스펙이 아니라 <b>브라우저</b>에 구현되어 있는 스펙입니다.<br/>
+          만약, CORS 정책을 위반하는 리소스 요청을 하더라도 해당 서버가 같은 출처에서 보낸 요청만
+          받겠다는 로직을 가지고 있는 경우가 아니라면 서버는 정상적으로 응답하고, 이후 브라우저가 이 응답을 분석, CORS 정책 위반이라고 판단되면 그 응답을 사용하지 않고 그냥 버립니다.
+        </p>
+        <p>
+          따라서, 브라우저를 통하지 않고 서버 간 통신을 할 때는 이 정책이 적용되지 않습니다. CORS 정책을 위반하는 리소스 요청 때문에 에러가 발생했다 하더라도 서버 쪽 로그는 정상적으로 응답합니다.
+        </p>
+      </div>
+    </div>
+
+    <div class="content-container">
+      <div class="description">
+        <h2>⚡️ CORS & SOP가 나오게 된 이유</h2><br /><br />
+        <p>
+          SOP가 있음에도 보안 취약점을 공격할 수 있는 것이 몇가지 있습니다.<br />
+          CSRF(Cross-Site Request Forgery-사이트 간 요청 위조)와 XSS(Cross-Site Scripting-script를 악의적으로 심는 것)입니다.<br /> 
+          이런 보안 취약점을 막기 위해서 나온 것입니다.
+        </p>    
       </div>
     </div>
 
