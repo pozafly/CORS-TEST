@@ -1,0 +1,21 @@
+CORS TEST는 네트워크 요청 시 발생하는 CORS 에러를 직접 코드를 통해 확인하기 위해 만들어졌다.
+
+어떤 버튼을 두고 어떤 요청을 보낼 것인가?
+
+ - CORS 에러가 나도록
+  1. Naver TEST
+  2. express 서버에서 api 호출
+
+ - SOP 예외 조항 테스트
+  1. 스크립트 파일 가져오기
+  2. 이미지 가져오기
+  3. 스타일 시트 가져오기
+
+ - 시나리오 TEST
+  1. Preflight Request
+  2. Simple Request
+  3. Credentialed Request
+
+ - CORS 에러를 잡는 방법
+  1. Access-Control-Allow-Origin header를 '*'로 설정
+  2. Webpack Dev Server proxy 사용으로 api 요청

@@ -6,7 +6,7 @@ const result = document.querySelector('.result');
 const btn = document.querySelector('.btn');
 
 btn.addEventListener('click', () => {
-  axios.get('http://localhost:3000/').then((data) => {
+  axios.get('http://localhost:3000/api/name').then((data) => {
     console.log(data);
     result.innerHTML = data.data.map(item => item.name);
   }).catch(error => {
