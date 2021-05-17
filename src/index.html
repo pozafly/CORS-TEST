@@ -505,34 +505,71 @@ await axios.get('http://localhost:3000/credentialed', {
           브라우저가 굳이 CORS 정책을 가지고 있는 이유가 없어지기 때문입니다. 헤더는 Nginx나 Apache와 같은 <br/>
           서버 엔진의 설정에서도 가능하지만, Spring, Express 등의 백엔드 프레임워크의 경우 CORS 관련 설정을 위한 세팅 혹은 미들웨어 라이브러리가 제공되고 있습니다.
         </p>
+        <p>
+          express 같은 경우, npm으로 cors 라이브러리를 다운 받고, 아래 소스와 같이 처리해주면 됩니다.
+        </p>
         <br />
         <h3>서버</h3>
         <pre>
           <code>
-app.get('/credentialed', (req, res) => {
-  res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
-  res.header('Access-Control-Allow-Credentials', 'true');
-  res.send('pass');
-});
+const cors = require('cors');
+
+app.use(
+cors({
+  origin: true,  // 자동으로 origin을 설정해줌.
+  // credentials: true,  // 클라이언트의 header가 credentialed: true 일 경우.
+  })
+);
           </code>
         </pre>
+        <br/>
+        <h4>2. Webpack Dev Server 리버스 프록싱 하기</h4>
+        <p>
+          CORS를 가장 많이 마주치는 환경은 로컬에서 프론트엔드 어플리케이션을 개발하는 경우입니다.<br/>
+          프론트엔드 개발자는 대부분 웹팩과 <b>webpack-dev-server</b> 를 사용해 자신의 local 개발 환경을 구축하게됩니다.<br/> 
+          이 라이브러리가 제공하는 프록시 기능을 사용하면 CORS 정책을 우회할 수 있습니다. 아래는 webpack.config.js 파일에 설정할 수 있습니다.
+        </p>
+        <br />
+        <h3>Webpack.config.js</h3>
+        <pre>
+          <code>
+module.exports = {
+  (...)
+  devServer: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+      },
+    }
+  }
+}
+          </code>
+        </pre>
+        <br/>
+        <h3>서버</h3>
+        <pre>
+          <code>
+  app.get('/api/proxy', (req, res) => {
+    res.send('pass');
+  });
+          </code>
+        </pre>
+        <br />
         <h3>클라이언트</h3>
         <pre>
           <code>
-await axios.get('http://localhost:3000/credentialed', {
-  withCredentials: true,
-});
+axios.get('/api/proxy');
           </code>
         </pre>
         <div class="content">
-          <button class="btn credentialed-call">Click</button>
-          <div class="result credentialed-result"></div>
+          <button class="btn proxy-call">Click</button>
+          <div class="result proxy-result"></div>
         </div>
-
-        <div class="content">
-          <button class="btn show-origin-call">Click</button>
-          <div class="result show-origin-result"></div>
-        </div>
+        <p>
+          webpack.config.js 파일에 설정한대로 '/api' 가 붙은 주소로 요청을 보낼 때, localhost:3000으로 서버의 주소를 proxy(대리자) 해줍니다.<br/>
+          즉, 현재 실행되고 있는 Webpack dev server 의 port를 3000으로 되있는 것 처럼 속이는 것입니다.<br/>
+          여기서 주의할 점은 클라이언트의 call 주소가 ('http://localhost:3000/api/proxy') 가 아니라 그냥 '/api/proxy' 인 점을 주의하세요.
+        </p>
       </div>
     </div>
   </main>

@@ -87,6 +87,7 @@ h3 {
   font-size: 1.2rem;
   margin-bottom: 3rem;
   border-radius: 13px;
+  cursor: pointer;
 }
 
 .result {

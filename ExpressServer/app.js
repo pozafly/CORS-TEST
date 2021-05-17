@@ -14,11 +14,9 @@ const cors = require('cors');
 app.use(
   cors({
     origin: true,
-    credentials: true,
+    // credentials: true,
   })
 );
-
-
 
 app.listen(port, () => {
   console.log(`Exam listening at http: http://localhost:${port}`);

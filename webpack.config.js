@@ -11,22 +11,12 @@ module.exports = {
   devServer: {
     port: 8080,
     open: true,
-    // before: (app, server, compiler) => {
-    //   app.get('/api/keywords', (req, res) => {
-    //     res.json([
-    //       { keyword: 'apple' },
-    //       { keyword: 'banana' },
-    //       { keyword: 'carrot' },
-    //       { keyword: 'grape' },
-    //     ]);
-    //   });
-    // },
-    // proxy: {
-      // '/api': {
-      //   target: 'http://localhost:3000',
-      //   changeOrigin: true,
-      // },
-    // },
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',
+        // changeOrigin: true,
+      },
+    },
   },
   plugins: [
     new HtmlWebpackPlugin({
