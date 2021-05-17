@@ -14,13 +14,16 @@
 
 ## 설치 및 시작
 
-### webpack-dev-server
+먼저 해당 repository를 local 환경에 clone 합니다. VSCode로 여셔서 터미널을 2개 여시면 서버를 구동하기 쉽습니다. 아래 사진과 같이 터미널 분할을 이용해 터미널 2개를 여실 수 있습니다.
 
-1. 해당 repository를 clone.
-2. `npm install`
-3. `npm run dev`
+<img width="387" alt="스크린샷 2021-05-17 오후 10 33 48" src="https://user-images.githubusercontent.com/59427983/118497428-072c0180-b760-11eb-95e4-579df2c31ff2.png">
 
-### express.js
+### 1번 터미널 : webpack-dev-server
+
+1. `npm install`
+2. `npm run dev`
+
+### 2번 터미널 : express.js
 
 1. node.js가 설치되어 있어야 합니다.
 2. `cd ExpressServer`
@@ -31,5 +34,4 @@
 
 ## 기본 세팅
 
-기본 값으로 webpack-dev-server는 8080 포트를 사용하며, express는 3000 포트를 사용합니다. 두 서버 모두 구동이 되면 http://localhost:8080으로 접속하셔서 **F12**로 크롬 개발자 도구의 Network 탭에서 **ALL**을 누르시고 각 버튼을 누를 때 어떤 요청이 가는지 확인하실 수 있습니다.
-
+기본 값으로 webpack-dev-server는 `8080` 포트를 사용하며, express는 `3000` 포트를 사용합니다. 두 서버 모두 구동이 되면 http://localhost:8080으로 접속하셔서 **F12**로 크롬 개발자 도구의 Network 탭에서 **ALL**을 누르시고 각 버튼을 누를 때 어떤 요청이 가는지 확인하실 수 있습니다.
