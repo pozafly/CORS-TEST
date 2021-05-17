@@ -32,3 +32,20 @@ preflightCall.addEventListener('click', async () => {
     preflightCall.style.backgroundColor = ERROR_COLOR;
   }
 });
+
+const credentialedCall = document.querySelector('.credentialed-call');
+const credentialedResult = document.querySelector('.credentialed-result');
+
+credentialedCall.addEventListener('click', async () => {
+  try {
+    const { data } = await axios.get('http://localhost:3000/credentialed', {
+      withCredentials: true,
+    });
+    credentialedResult.innerHTML = data;
+    credentialedCall.style.backgroundColor = SUCCESS_COLOR;
+  } catch (error) {
+    console.dir(error);
+    credentialedResult.innerHTML = error;
+    credentialedCall.style.backgroundColor = ERROR_COLOR;
+  }
+});

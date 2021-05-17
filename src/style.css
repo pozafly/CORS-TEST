@@ -40,6 +40,10 @@ th, td {
   box-shadow: 5px 5px 15px 5px rgba(0,0,0,0.1);
 }
 
+.ref {
+  font-size: 1rem;
+}
+
 .intro {
   /* text-align: center; */
   margin: 4rem 9rem 0;
@@ -105,6 +109,7 @@ code {
   font-family: -apple-system, BlinkMacSystemFont,'Segoe UI',Roboto,'Noto Sans','Ubuntu','Droid Sans','Helvetica Neue',sans-serif;
   font-size: 1rem;
   margin-bottom: 1.5rem;
+  line-height: 1.5;
 }
 
 footer {

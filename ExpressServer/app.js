@@ -6,10 +6,18 @@ const router = require('./router/main')(app);
 app.use(express.json());
 
 app.get('/', (req, res) => {
-  console.log(req)
-  console.log(res)
   res.send('Hello World!');
 });
+
+const cors = require('cors');
+
+app.use(
+  cors({
+    origin: true,
+    credentials: true,
+  })
+);
+
 
 
 app.listen(port, () => {

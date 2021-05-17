@@ -10,6 +10,7 @@ module.exports = {
   },
   devServer: {
     port: 8080,
+    open: true,
     // before: (app, server, compiler) => {
     //   app.get('/api/keywords', (req, res) => {
     //     res.json([
@@ -20,12 +21,12 @@ module.exports = {
     //     ]);
     //   });
     // },
-    proxy: {
+    // proxy: {
       // '/api': {
       //   target: 'http://localhost:3000',
       //   changeOrigin: true,
       // },
-    },
+    // },
   },
   plugins: [
     new HtmlWebpackPlugin({

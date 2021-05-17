@@ -21,7 +21,7 @@ const expressResult = document.querySelector('.express-result');
 
 expressCall.addEventListener('click', async () => {
   try {
-    const { data } = await axios.post('http://localhost:3000');
+    const { data } = await axios.get('http://localhost:3000');
     console.log(data);
   } catch (error) {
     console.dir(error);

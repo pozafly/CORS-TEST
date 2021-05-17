@@ -18,6 +18,9 @@
         CORS TEST는 네트워크 요청 시 발생하는 CORS 에러를 직접 코드를 통해 확인하기 위해 만들어졌습니다. <br/>  
         구체적인 설명과 함께 CORS를 직접 경험하면서 어떻게 해결해야할지 알아봐요!
       </p>
+      <p class="ref">
+        📌 참고로 TEST에서는 <b>Axios</b> 라이브러리를 사용합니다. Axios 라이브러리는 내부적으로 <b>MLHttpRequest</b>를 사용합니다.
+      </p>
     </h2>
 
     <div class="content-container">
@@ -226,8 +229,7 @@ console.log(location.origin);
         </span>
         <pre>
           <code class="javascript">
-const { data } = await axios.get('https://www.naver.com');
-console.log(data);
+axios.get('https://www.naver.com');
           </code>
         </pre>
       </div>
@@ -245,8 +247,7 @@ console.log(data);
         </span>
         <pre>
           <code class="javascript">
-const { data } = await axios.get('http://localhost:3000');
-console.log(data);
+axios.get('http://localhost:3000');
           </code>
         </pre>
       </div>
@@ -298,26 +299,19 @@ Origin === Access-Control-Allow-Origin
         <br />
         <h3>서버</h3>
         <pre>
-                  <code>
+          <code>
 app.get('/noCORS', (req, res) => {
   res.header('Access-Control-Allow-Origin', '*');
   res.send('pass');
 });
-                  </code>
-                </pre>
+          </code>
+        </pre>
         <h3>클라이언트</h3>
         <pre>
-                  <code>
-try {
-  const { data } = await axios.get('http://localhost:3000/noCORS');
-  nocorsResult.innerHTML = data;
-  nocorsCall.style.backgroundColor = SUCCESS_COLOR;
-} catch (error) {
-  nocorsResult.innerHTML = error;
-  nocorsCall.style.backgroundColor = ERROR_COLOR;
-}
-                  </code>
-                </pre>
+          <code>
+axios.get('http://localhost:3000/noCORS');
+          </code>
+        </pre>
         <div class="content">
           <button class="btn nocors-call">Click</button>
           <div class="result nocors-result"></div>
@@ -357,128 +351,190 @@ try {
         </p>
         <h3>서버</h3>
         <pre>
-                          <code>
-        app.get('/noCORS', (req, res) => {
-          res.header('Access-Control-Allow-Origin', '*');
-          res.send('pass');
-        });
-                          </code>
-                        </pre>
+          <code>
+app.post('/preflight', (req, res) => {
+  res.send('pass');
+});
+          </code>
+        </pre>
         <h3>클라이언트</h3>
         <pre>
-                          <code>
-        try {
-          const { data } = await axios.get('http://localhost:3000/noCORS');
-          preflightResult.innerHTML = data;
-          preflightCall.style.backgroundColor = SUCCESS_COLOR;
-        } catch (error) {
-          preflightResult.innerHTML = error;
-          preflightCall.style.backgroundColor = ERROR_COLOR;
-        }
-                          </code>
-                        </pre>
+          <code>
+axios.post('http://localhost:3000/preflight', {
+  headers: { 'Content-Type': 'application/json' },
+});
+          </code>
+        </pre>
         <div class="content">
           <button class="btn preflight-call">Click</button>
           <div class="result preflight-result"></div>
         </div>
+        <p>
+          클라이언트는 post Method를 사용해서 요청을 보냈습니다. 보내면서 header에 Content-Type으로 application/json 을 받도록 요청합니다.
+          application/json으로 설정했으므로 뒤에 살펴볼 Simple request에 해당하지 않기 때문에 브라우저는 preflight 방식으로 진행합니다.
+          개발자 도구의 Network 탭에서 확인해보면, 요청이 2번 진행된 것을 볼 수 있습니다.
+        </p>
+        <p>
+          preflight요청의 Request Headers에서 봐야할 것은 3가지입니다. 
+          <ul>
+            <li>OPTIONS 메서드를 통해 preflight 방식으로 요청</li>
+            <li>Access-Control-Request-Headers: content-type</li>
+            <li>Access-Control-Request-Method: POST</li>
+          </ul>
+        </p>
+        <p>
+          Access-Control-Request-Headers는 어떤 타입을 받을 것인지를 말해주고, Access-Control-Request-Method는 preflight로 검증이 끝난 후
+          어떤 메서드를 사용할 것인지를 말해줍니다.
+          서버에서는 header를 따로 넘겨주지 않고, pass 라는 문자열만 넘겨주도록 했습니다. 따라서 CORS 에러가 발생합니다.
+          만약 Access-Control-Max-Age라는 헤더를 설정해준다면 Preflight Request 결과가 캐시에 저장되어 지정한 시간 만큼 Preflight Request를 날리지 않게 됩니다.
+        </p>
+        
+        <br/>
+        <br/>
+
+        <h4>2. Simple Request</h4>
+        <p>
+          단순 요청입니다. 단순 요청은 예비 요청을 보내지 않고 바로 서버에 요청 후 응답 헤더에<br/>
+          <b>Access-Control-Allow-Origin</b>을 보내주면 브라우저가 CORS 정책 위반 여부를 검사하는 방식입니다.
+        </p>
+        <img width="870" alt="스크린샷 2021-05-14 오후 12 59 03"
+          src="https://user-images.githubusercontent.com/59427983/118446058-27d96480-b72a-11eb-9983-0d9e7228034e.png">
+        <p>
+          아래 조건을 모두 만족하는 경우에만 preflight request를 생략할 수 있습니다.
+        </p>
+        <p>
+          <ul>
+            <li>1. 요청의 메소드가 <b>GET</b>, <b>HEAD</b>, <b>POST</b>중 하나.</li>
+            <li>2. <b>Accept</b>, <b>Accept-Language</b>, <b>Content-Language</b>, <b>Content-Type</b>, <b>DPR</b>, <b>Downlink</b>, <b>Save-Data</b>, <b>Viewport-Width</b>,
+            <b>Width</b> 를 제외한 헤더를 사용하면 안된다.</li>
+            <li>3. 만약 Content-Type 을 사용하는 경우, application/x-www-form-urlencoded, multipart/form-data, text/plain 만 허용된다.</li>
+            <li>4. 커스텀 헤더를 전송하지 말아야 한다.</li>
+          </ul>
+        </p>
+        <p>
+          조건이 까다롭기 때문에 주로 Preflight Request 방식이 대부분 사용된다고 합니다. 사용자 인증에 사용되는 Authorization 헤더 조차 저 조건에 포함되지 않고, 대부분의 HTTP API는
+          text/xml 이나 application/json 컨텐츠 타입을 가지도록 설계되기 때문에 사실 상 이 조건들을 모두 만족시키는 상황을 만들기는 쉽지 않습니다.
+        </p>
+
+        <br />
+        <br />
+        
+        <h4>3. Credentialed Request</h4>
+        <p>
+          단순 요청입니다. 단순 요청은 예비 요청을 보내지 않고 바로 서버에 요청 후 응답 헤더에<br />
+          <b>Access-Control-Allow-Origin</b>을 보내주면 브라우저가 CORS 정책 위반 여부를 검사하는 방식입니다.
+        </p>
+        <p>
+          3가지 옵션을 사용할 수 있습니다.
+        </p>
+        <p>
+        <table border="1px">
+          <thead>
+            <tr>
+              <th>옵션 값</th>
+              <th align="center">설명</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td align="center">same-origin (기본값)</td>
+              <td align="center">같은 출처 간 요청에만 인증 정보를 담을 수 있다.</td>
+            </tr>
+            <tr>
+              <td align="center">include</td>
+              <td align="center">모든 요청에 인증 정보를 담을 수 있다.</td>
+            </tr>
+            <tr>
+              <td align="center">omit</td>
+              <td align="center">모든 요청에 인증 정보를 담지 않는다.</td>
+            </tr>
+          </tbody>
+        </table>
+        </p>
+        <p>
+          same-origin, include와 같은 옵션을 사용해 리소스 요청에 인증 정보가 포함되면 단순히 Access-Control-Allow-Origin 만 확인 하는 것이 아니라 검증이 더 빡빡해집니다.
+          pozafly.github.io는 Access-Control-Allow-Origin이 * 으로 되어 있어 CORS 정책 위반으로 제약을 받지 않습니다.
+        </p>
+        <br />
+        <h3>서버</h3>
+        <pre>
+          <code>
+app.get('/credentialed', (req, res) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.send('pass');
+});
+          </code>
+        </pre>
+        <h3>클라이언트</h3>
+        <pre>
+          <code>
+await axios.get('http://localhost:3000/credentialed', {
+  withCredentials: true,
+});
+          </code>
+        </pre>
+        <div class="content">
+          <button class="btn credentialed-call">Click</button>
+          <div class="result credentialed-result"></div>
+        </div>
+        <p>
+          서버 측 코드를 한번 봅시다. 2개의 header를 포함시켜주었습니다. 먼저 Access-Control-Allow-Origin은 클라이언트의 정확한 주소를 적어주었습니다.<br/>
+          여기서 기존에 Credentialed가 아닌 녀석들은 와일드 카드인 '*' 만 적어주었을 때도 가능했지만 여기서는 불가능합니다.<br/>
+          정확한 오리진을 적어주어야 하는 것입니다.
+        </p>
+        <p>
+          그리고 두 번째로 Access-Control-Allow-Credentials는 true로 넘겨주었습니다. 이번 요청에는 브라우저의 쿠키 정보가 함께 담겨있습니다.<br/>
+          요청에 인증 정보가 담겨있는 상태에서 다른 출처의 리소스를 요청하게 되면, 브라우저는 CORS 정책 위반 여부를 검사하는 룰에 다음 두 가지를 추가합니다.
+        </p>
+        <p>
+          <ul>
+            <li>1. Access-Control-Allow-Origin에는 *를 사용할 수 없으며, 명시적인 URL이어야한다.</li>
+            <li>2. 응답 헤더에는 반드시 Access-Control-Allow-Credentials: true가 존재해야한다.</li>
+          </ul>
+        </p>
       </div>
     </div>
-
-    <div class="content-container">
-      <div class="description">
-        <h4>dkdjrnkd</h4>
-        <code>
-          public int main void(String args) {
-            console.log()
-          }
-        </code>
-
-        <span>이러이러한 설명을 넣을 것입니다.ㅇ이러이러한 설명을 넣을 것입니다.ㅇ이러이러한 설명을 넣을 것입니다.ㅇ이러이러한 설명을 넣을 것입니다.ㅇ이러이러한 설명을 넣을 것입니다.ㅇ이러이러한 설명을 넣을 것입니다.ㅇ</span>
-      </div>
-      
-      <div class="content">
-        <button class="btn">Click</button>
-        <div class="result">결과 값이 들어갈 자리 입니당.</div>
-      </div>
-    </div>
-
-    <div class="content-container">
-      <div class="description">
-        <h4>dkdjrnkd</h4>
-        <code>
-          public int main void(String args) {
-            console.log()
-          }
-        </code>
-
-        <span>이러이러한 설명을 넣을 것입니다.ㅇ이러이러한 설명을 넣을 것입니다.ㅇ이러이러한 설명을 넣을 것입니다.ㅇ이러이러한 설명을 넣을 것입니다.ㅇ이러이러한 설명을 넣을 것입니다.ㅇ이러이러한 설명을 넣을 것입니다.ㅇ</span>
-      </div>
-      
-      <div class="content">
-        <button class="btn">Click</button>
-        <div class="result">결과 값이 들어갈 자리 입니당.</div>
-      </div>
-    </div>
-
-    <div class="content-container">
-      <div class="description">
-        <h4>dkdjrnkd</h4>
-        <code>
-          public int main void(String args) {
-            console.log()
-          }
-        </code>
-
-        <span>이러이러한 설명을 넣을 것입니다.ㅇ이러이러한 설명을 넣을 것입니다.ㅇ이러이러한 설명을 넣을 것입니다.ㅇ이러이러한 설명을 넣을 것입니다.ㅇ이러이러한 설명을 넣을 것입니다.ㅇ이러이러한 설명을 넣을 것입니다.ㅇ</span>
-      </div>
-      
-      <div class="content">
-        <button class="btn">Click</button>
-        <div class="result">결과 값이 들어갈 자리 입니당.</div>
-      </div>
-    </div>
-
-    <div class="content-container">
-      <div class="description">
-        <h4>dkdjrnkd</h4>
-        <code>
-          public int main void(String args) {
-            console.log()
-          }
-        </code>
-
-        <span>이러이러한 설명을 넣을 것입니다.ㅇ이러이러한 설명을 넣을 것입니다.ㅇ이러이러한 설명을 넣을 것입니다.ㅇ이러이러한 설명을 넣을 것입니다.ㅇ이러이러한 설명을 넣을 것입니다.ㅇ이러이러한 설명을 넣을 것입니다.ㅇ</span>
-      </div>
-      
-      <div class="content">
-        <button class="btn">Click</button>
-        <div class="result">결과 값이 들어갈 자리 입니당.</div>
-      </div>
-    </div>
-
-    <div class="content-container">
-      <div class="description">
-        <h4>dkdjrnkd</h4>
-        <code>
-          public int main void(String args) {
-            console.log()
-          }
-        </code>
-
-        <span>이러이러한 설명을 넣을 것입니다.ㅇ이러이러한 설명을 넣을 것입니다.ㅇ이러이러한 설명을 넣을 것입니다.ㅇ이러이러한 설명을 넣을 것입니다.ㅇ이러이러한 설명을 넣을 것입니다.ㅇ이러이러한 설명을 넣을 것입니다.ㅇ</span>
-      </div>
-      
-      <div class="content">
-        <button class="btn">Click</button>
-        <div class="result">결과 값이 들어갈 자리 입니당.</div>
-      </div>
-    </div>
-
-
-
-
     
+    <div class="content-container">
+      <div class="description">
+        <h2>⚡️ 해결방법</h2><br /><br />
+        <h4>1. Access-Control-Allow-Origin 세팅하기</h4>
+        <p>
+          서버에서 Access-Control-Allow-Origin 헤더에 알맞은 오리진을 세팅해주는 방법입니다. 와일드 카드인 '*' 을 사용해 세팅 하지맙시다.<br/>
+          브라우저가 굳이 CORS 정책을 가지고 있는 이유가 없어지기 때문입니다. 헤더는 Nginx나 Apache와 같은 <br/>
+          서버 엔진의 설정에서도 가능하지만, Spring, Express 등의 백엔드 프레임워크의 경우 CORS 관련 설정을 위한 세팅 혹은 미들웨어 라이브러리가 제공되고 있습니다.
+        </p>
+        <br />
+        <h3>서버</h3>
+        <pre>
+          <code>
+app.get('/credentialed', (req, res) => {
+  res.header('Access-Control-Allow-Origin', 'http://localhost:8080');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.send('pass');
+});
+          </code>
+        </pre>
+        <h3>클라이언트</h3>
+        <pre>
+          <code>
+await axios.get('http://localhost:3000/credentialed', {
+  withCredentials: true,
+});
+          </code>
+        </pre>
+        <div class="content">
+          <button class="btn credentialed-call">Click</button>
+          <div class="result credentialed-result"></div>
+        </div>
 
+        <div class="content">
+          <button class="btn show-origin-call">Click</button>
+          <div class="result show-origin-result"></div>
+        </div>
+      </div>
+    </div>
   </main>
   <footer>
     Made by pozafly
