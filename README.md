@@ -2,7 +2,7 @@
 
 <br/>
 
-![스크린샷 2021-05-17 오후 10 24 05](https://user-images.githubusercontent.com/59427983/118495937-a5b76300-b75e-11eb-8952-92a702d429c4.png)
+<img width="700" src="https://user-images.githubusercontent.com/59427983/118496725-5b82b180-b75f-11eb-94fc-79cb151bd114.png" />
 
 개발자가 CORS 이슈를 겪을 때 로컬에서 CORS 에러를 체험하고 직접 해결해볼 수 있는 서버 및 클라이언트입니다.
 
